@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import sys
@@ -163,13 +164,14 @@ def compose(art: list[str], panel: list[str], *, gap: int, columns: int) -> list
     if panel and art_width + gap + panel_width <= columns:
         offset = max(0, (len(art) - len(panel)) // 2)
         lines = []
-        for index in range(len(art)):
+        for index in range(max(len(art), len(panel))):
+            left = art[index] if index < len(art) else ""
             panel_index = index - offset
             if 0 <= panel_index < len(panel):
-                pad = art_width - len(_visible(art[index]))
-                lines.append(art[index] + " " * (pad + gap) + panel[panel_index])
+                pad = art_width - len(_visible(left))
+                lines.append(left + " " * (pad + gap) + panel[panel_index])
             else:
-                lines.append(art[index])
+                lines.append(left)
         return lines
 
     if not panel:
@@ -274,6 +276,36 @@ def _render(args, when: datetime, *, color: bool, columns: int) -> str:
     return "\n".join(compose(art, panel, gap=4, columns=columns))
 
 
+def _emit(text: str) -> None:
+    """Write and flush, so a closed pipe fails here rather than at exit."""
+    sys.stdout.write(text)
+    sys.stdout.flush()
+
+
+def _silence_stdout() -> None:
+    """Point stdout at the void so the interpreter's final flush cannot fail.
+
+    Without this, ``moonterm | head`` ends with an "Exception ignored ...
+    BrokenPipeError" traceback sprayed over the user's terminal.
+    """
+    try:
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+    except (AttributeError, OSError, ValueError):
+        pass
+
+
+def _watch(args, *, color: bool, columns: int) -> None:
+    delay = max(0.2, float(args.watch))
+    while True:
+        frame = _render(args, parse_when(args.date), color=color, columns=columns)
+        # Home the cursor and clear, which avoids flicker on most terminals
+        # and keeps the scrollback clean.
+        _emit("\x1b[H\x1b[2J" if color else "\x1b[H")
+        _emit(frame + "\n")
+        time.sleep(delay)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -283,28 +315,23 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         parser.error(str(exc))
 
-    stdout = sys.stdout
     columns = shutil.get_terminal_size((80, 24)).columns
-    is_tty = bool(getattr(stdout, "isatty", lambda: False)())
+    is_tty = bool(getattr(sys.stdout, "isatty", lambda: False)())
     color = args.force_color or (is_tty and not args.plain)
 
-    if args.watch is not None:
-        delay = max(0.2, float(args.watch))
-        try:
-            while True:
-                now = parse_when(args.date)
-                frame = _render(args, now, color=color, columns=columns)
-                # Home the cursor and clear, which avoids flicker on most
-                # terminals and keeps scrollback clean.
-                stdout.write("\x1b[H\x1b[2J" if color else "\x1b[H")
-                stdout.write(frame + "\n")
-                stdout.flush()
-                time.sleep(delay)
-        except KeyboardInterrupt:
-            stdout.write("\n")
-            return 0
-
-    stdout.write(_render(args, when, color=color, columns=columns) + "\n")
+    try:
+        if args.watch is not None:
+            _watch(args, color=color, columns=columns)
+        else:
+            _emit(_render(args, when, color=color, columns=columns) + "\n")
+    except KeyboardInterrupt:
+        sys.stdout.write("\n")
+        return 0
+    except BrokenPipeError:
+        # The reader went away (head, less, a closed pty). Nothing is wrong
+        # with what we computed, so exit quietly and successfully.
+        _silence_stdout()
+        return 0
     return 0
 
 

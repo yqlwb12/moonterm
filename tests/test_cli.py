@@ -93,6 +93,17 @@ class OutputTest(unittest.TestCase):
             self.assertGreater(when, now)
             self.assertLess(when - now, timedelta(days=30))
 
+    def test_narrow_moon_keeps_the_whole_panel(self):
+        code, out = run("--plain", "-w", "9", "-d", "2026-10-31T12:23")
+        self.assertEqual(code, 0)
+        self.assertIn("new", out)
+        self.assertIn("full", out)
+        self.assertEqual(len(out.strip().splitlines()), 6)
+
+    def test_compose_pads_the_shorter_side(self):
+        self.assertEqual(len(cli.compose(["a"] * 3, ["p"] * 6, gap=2, columns=200)), 6)
+        self.assertEqual(len(cli.compose(["a"] * 7, ["p"] * 2, gap=2, columns=200)), 7)
+
     def test_narrow_terminal_stacks_the_panel(self):
         old = cli.shutil.get_terminal_size
 

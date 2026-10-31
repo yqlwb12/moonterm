@@ -21,17 +21,18 @@ So: compute the two longitudes and subtract.
 **Sun.** Meeus ch. 25: mean longitude, mean anomaly, an equation of centre with
 three periodic terms. Good to 0.01° for the era we care about.
 
-**Moon.** Meeus ch. 47, which is ELP-2000/82 truncated to 60 periodic terms.
-Each term is a small correction with an argument built from five fundamental
-angles — mean elongation `D`, the Sun's mean anomaly `M`, the Moon's mean anomaly
-`M'`, the argument of latitude `F`, and the mean longitude `L'`:
+**Moon.** Meeus ch. 47, which is ELP-2000/82 truncated to the fifty largest
+periodic terms. Each term is a small correction with an argument built from five
+fundamental angles — mean elongation `D`, the Sun's mean anomaly `M`, the Moon's
+mean anomaly `M'`, the argument of latitude `F`, and the mean longitude `L'`:
 
     Σl = Σ k_i · sin(c1·D + c2·M + c3·M' + c4·F)
 
 The first term, `6288774 · sin(M')` in units of 10⁻⁶ degrees, is about 6.3° on
 its own — that is the equation of centre, and skipping it is how you get a moon
 that is a day off. The rest are perturbations down to fractions of an arcsecond.
-Sixty of them is 50 lines of table and about 20 µs of work per call.
+The fifty rows cover everything above roughly 1.7″, which leaves the longitude
+within 0.01° of the full theory at about 50 µs per call.
 
 The distance series is the same shape, with cosines instead of sines, and lands
 within 20 km of the full theory — irrelevant for drawing, but it lets

@@ -2,9 +2,9 @@
 
 The Moon's geocentric ecliptic longitude is evaluated with the truncated
 ELP-2000/82 series given in Meeus, *Astronomical Algorithms* (2nd ed.),
-chapter 47 -- the sixty periodic terms that survive truncation at the
-arcsecond level.  The Sun's longitude comes from the low-precision solar
-theory of chapter 25.
+chapter 47 -- the fifty largest periodic terms, every one of them still
+worth more than about 1.7 arcseconds.  The Sun's longitude comes from the
+low-precision solar theory of chapter 25.
 
 Since both longitudes are *mean* longitudes, the nutation terms cancel in
 their difference: the elongation psi = lambda_moon - lambda_sun does not
@@ -17,7 +17,7 @@ Accuracy, measured against Meeus' worked examples in the test suite:
     distance           ~ 20 km
     new/full moon      ~ 3 minutes
 
-That is far better than a terminal moon needs, and it costs ~50 lines of
+That is far better than a terminal moon needs, and it costs 50 lines of
 tables.  The alternative -- an average synodic month from one epoch -- is
 off by up to 14 hours on any given night, which is very visible when you
 draw the thing.
@@ -146,7 +146,7 @@ def sun_longitude(jd: float) -> float:
 
 # Each row is (D, M, M', F, coefficient of longitude in 1e-6 deg,
 # coefficient of distance in 1e-3 km).  Table 47.A, truncated after the
-# terms that still contribute more than half an arcsecond.
+# terms that still contribute more than ~1.7 arcseconds.
 _TERMS = (
     (0, 0, 1, 0, 6288774, -20905355),
     (2, 0, -1, 0, 1274027, -3699111),

@@ -9,7 +9,7 @@
 ## Why
 
 `cal` tells you the date. `date` tells you the time. Neither tells you what the sky
-is doing, and `curl wttr.in/moon` needs the network. This is ~770 lines of Python
+is doing, and `curl wttr.in/moon` needs the network. This is ~950 lines of Python
 that computes the phase from the ephemeris and draws it, so `moonterm` works on a
 plane, in a container, and in a `watch`.
 
@@ -177,7 +177,7 @@ and pretending otherwise would need a 200-line series.
 $ PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-48 tests, standard library only, no test dependencies. CI runs them on Python
+50 tests, standard library only, no test dependencies. CI runs them on Python
 3.9–3.13 across Linux, macOS and Windows.
 
 ## License
