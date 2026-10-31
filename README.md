@@ -2,6 +2,10 @@
 
 [![tests](https://github.com/yqlwb12/moonterm/actions/workflows/ci.yml/badge.svg)](https://github.com/yqlwb12/moonterm/actions/workflows/ci.yml)
 
+> **Experimental project, for reference and learning only.**
+> Published as-is, with no warranty of correctness or fitness for purpose.
+> 本项目仅供参考与实验用途，不保证可靠性；生产使用前请自行充分测试。
+
 **Tonight's moon, drawn in your terminal.** Pure Python, no dependencies, ASCII on the way out.
 
 ![moonterm drawing a waning gibbous moon, with 24-bit colour](docs/preview.png)
@@ -179,6 +183,24 @@ $ PYTHONPATH=src python -m unittest discover -s tests -v
 
 50 tests, standard library only, no test dependencies. CI runs them on Python
 3.9–3.13 across Linux, macOS and Windows.
+
+## Disclaimer
+
+This repository is a personal experiment, published for reference and learning.
+It is not production software.
+
+- **No warranty.** Provided "as is", without warranty of any kind, exactly as the
+  licence says. Correctness, fitness for purpose and safety are not guaranteed.
+- **Expect changes.** Interfaces, output formats and behaviour may change without
+  notice; the test suite describes what the code does today, not a promise about
+  tomorrow.
+- **Verify before you rely on it.** Read the code, run the tests, and check the
+  results yourself in your own environment.
+
+The geometry is an approximation: good enough to draw a moon, not good enough for navigation, observation planning, or anything that needs a documented ephemeris.
+
+本项目仅供学习、参考与实验使用，作者不对其可靠性、准确性与适用性作出任何保证。
+在生产环境使用或对外提供服务之前，请自行充分审查代码、评估风险并完成测试。
 
 ## License
 
