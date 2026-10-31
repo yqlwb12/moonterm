@@ -1,0 +1,10 @@
+# Normalise line endings: LF in the repository, whatever the platform wants
+# in the working tree.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.py text
+*.md text
+*.toml text
+*.yml text
