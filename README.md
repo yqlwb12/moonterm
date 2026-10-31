@@ -1,5 +1,7 @@
 # moonterm
 
+[![tests](https://github.com/yqlwb12/moonterm/actions/workflows/ci.yml/badge.svg)](https://github.com/yqlwb12/moonterm/actions/workflows/ci.yml)
+
 **Tonight's moon, drawn in your terminal.** Pure Python, no dependencies, ASCII on the way out.
 
 ![moonterm drawing a waning gibbous moon, with 24-bit colour](docs/preview.png)

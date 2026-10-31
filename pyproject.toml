@@ -32,9 +32,9 @@ classifiers = [
 moonterm = "moonterm.cli:main"
 
 [project.urls]
-# Fill in once the repository exists.
-# Homepage = "https://github.com/<owner>/moonterm"
-# Issues = "https://github.com/<owner>/moonterm/issues"
+Homepage = "https://github.com/yqlwb12/moonterm"
+Issues = "https://github.com/yqlwb12/moonterm/issues"
+Changelog = "https://github.com/yqlwb12/moonterm/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
